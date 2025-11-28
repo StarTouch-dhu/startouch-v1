@@ -1,6 +1,5 @@
 # 连接can设备
-sudo ip link set can0 up type can bitrate 1000000
-ip link show can0
+./reset_can.sh
 
 
 # 创建conda虚拟环境
