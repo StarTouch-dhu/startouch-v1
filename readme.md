@@ -1,8 +1,9 @@
-# 此sdk为12.15日更新
+# 此sdk为12.22日更新
 
 conda create -n startouch python=3.10
+
 conda activate startouch
-<!-- sudo apt-get install pybind11-dev -->
+
 
 # 更新包列表
 sudo apt-get update
@@ -10,23 +11,28 @@ sudo apt-get update
 # 安装 KDL 库
 sudo apt-get install liborocos-kdl-dev
 
+sudo apt-get install pybind11-dev
+
+
 mkdir build
+
 cd build
+
 cmake ..
+
 make
 
 cd ..
 
-
 #######test#######
 
 python interface_py/test_hardware.py
-
+python interface_py/ik.py
 
 # lerobot数采部分
 
-## 单臂主从遥操
-python single_master_follower.py
+## 单臂主从遥操，需两个臂实习主从遥操
+python lerobot_single_arm_tele.py
 
 
 ## 无遥操双臂数采
