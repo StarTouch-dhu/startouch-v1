@@ -1,0 +1,16 @@
+# ===== Python =====
+__pycache__/
+*.pyc
+
+# ===== C / C++ build =====
+build/
+
+
+# ===== Editor =====
+.vscode/
+.idea/
+
+# ===== OS =====
+.DS_Store
+EOF
+
