@@ -10,10 +10,10 @@ arm_controllers = [
 time.sleep(3)
 # ================== 参数 ==================
 POS_STEP = 0.005          # 2 mm
-RPY_STEP = math.radians(1.0)  # 1 deg
+RPY_STEP = math.radians(2.0)  # 1 deg
 GRIPPER_STEP = 0.05       # 夹爪步进（0~1）
 
-gripper_pos = 1.0
+gripper_pos = 0.0
 
 # ================== 终端按键工具 ==================
 def getch():
@@ -143,9 +143,9 @@ while True:
             print(
                 f"target pos = {pos}, target euler(rpy) = {euler}, target gripper = {gripper_pos:.3f}"
             )
-            print(
-                f"current pos = {np.array(cur_pos)}, current euler(rpy) = {np.array(cur_euler)}, current gripper = {float(cur_gripper):.3f}"
-            )
+            # print(
+            #     f"current pos = {np.array(cur_pos)}, current euler(rpy) = {np.array(cur_euler)}, current gripper = {float(cur_gripper):.3f}"
+            # )
         except Exception as e:
             print(f"读取当前末端状态失败: {e}")
     elif key == 'q':
