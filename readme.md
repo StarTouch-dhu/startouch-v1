@@ -1,4 +1,4 @@
-# 此sdk为12.22日更新
+# 此sdk为2026年3.1日更新
 
 conda create -n startouch python=3.10
 
@@ -24,10 +24,31 @@ make
 
 cd ..
 
-#######test#######
+# test
 
 python interface_py/test_hardware.py
+
+双臂同时进行控制例子，可自行切换单臂
 python interface_py/ik.py
+
+# 注：
+创建机械臂实例时，后面紧跟延时sleep，机械臂规划至零位，否则会速度较快的达到零位；且不支持canfd
+
+1. 单臂创建：
+
+arm_controller = SingleArm(can_interface_ = "can0")
+
+time.sleep(2)
+
+2. 双臂创建：
+
+arm_right = SingleArm(can_interface_="can0", enable_fd_=False)
+
+arm_left = SingleArm(can_interface_="can1", enable_fd_=False)
+
+time.sleep(2)
+
+
 
 # lerobot数采部分
 

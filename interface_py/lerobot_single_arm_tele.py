@@ -15,13 +15,15 @@ class MainArmJointPublisher(Node):
         self.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "gripper"]
 
         # 2. 初始化主臂控制器
-        self.arm_controller = SingleArm(can_interface_="can0", enable_fd_=False)
-        self.arm_follower = SingleArm(can_interface_="can1", enable_fd_=False)
+        self.arm_controller = SingleArm(can_interface_="can1", enable_fd_=False) # 主臂
+        self.arm_follower = SingleArm(can_interface_="can0", enable_fd_=False) # 从臂
         
+        time.sleep(2)
         self.vel_filtered = np.zeros(6)    # 关节速度
         self.alpha = 0.1                  # 滤波系数，可调整
 
         self.arm_controller.openGripper()
+        time.sleep(2)
         print("右臂控制器初始化完成")
 
         # 3. 第一次获取机械臂状态，确保连接正常
@@ -38,6 +40,7 @@ class MainArmJointPublisher(Node):
 
         # 5. 初始化并启动线程
         self.state_lock = threading.Lock()
+        self.stop_event = threading.Event()
         self.gravity_thread = threading.Thread(target=self.gravity, daemon=True)
         self.gravity_thread.start() # 启动线程
         print("重力补偿独立线程已启动")
@@ -53,7 +56,7 @@ class MainArmJointPublisher(Node):
 
     def publish_joint_states(self):
         try:
-            while True:
+            while not self.stop_event.is_set():
                 # 1. 检查关节数量是否匹配（避免发布错误数据）
                 with self.state_lock:
                     temp_controller = np.append(self.positions_controller, self.positions_controller_gripper)
@@ -83,16 +86,18 @@ class MainArmJointPublisher(Node):
             print(f"发布关节状态失败: {str(e)}")
 
     def gravity(self):
-        while True:
+        while not self.stop_event.is_set():
             try:
                 self.arm_controller.gravity_compensation()
                 time.sleep(0.01)
             except Exception as e:
+                if self.stop_event.is_set():
+                    break
                 print(f"右重力补偿独立线程执行失败: {str(e)}")
                 time.sleep(0.1)  # 避免过快循环导致日志刷屏
 
     def control(self):
-        while True:
+        while not self.stop_event.is_set():
             try:
                 with self.state_lock:
                     self.positions_controller = self.arm_controller.get_joint_positions()
@@ -117,8 +122,24 @@ class MainArmJointPublisher(Node):
 
                 time.sleep(0.001)
             except Exception as e:
+                if self.stop_event.is_set():
+                    break
                 print(f"右臂控制独立线程执行失败: {str(e)}")
                 time.sleep(0.1)  # 避免过快循环导致日志刷屏
+
+    def shutdown(self):
+        self.stop_event.set()
+
+        for thread in [self.gravity_thread, self.control_thread, self.publish_thread]:
+            if thread.is_alive():
+                thread.join(timeout=1.0)
+
+        for arm, name in [(self.arm_controller, "can0"), (self.arm_follower, "can1")]:
+            try:
+                arm.cleanup()
+                print(f"{name} cleanup ok")
+            except Exception as e:
+                print(f"{name} cleanup failed: {str(e)}")
                 
 def main(args=None):
     # 初始化ROS 2
@@ -129,10 +150,11 @@ def main(args=None):
     
     try:
         rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
     finally:
         # 清理资源
-        node.arm_controller.arm.cleanup()
-        node.arm_follower.arm.cleanup()
+        node.shutdown()
         node.destroy_node()
         rclpy.shutdown()
 

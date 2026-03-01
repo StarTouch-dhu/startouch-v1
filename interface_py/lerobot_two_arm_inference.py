@@ -17,6 +17,7 @@ class MainArmJointInference(Node):
         # 2. 初始化主臂控制器
         self.arm_right = SingleArm(can_interface_="can0", enable_fd_=False)
         self.arm_left = SingleArm(can_interface_="can1", enable_fd_=False)
+        time.sleep(2)
 
         # 3. 第一次获取机械臂状态，确保连接正常
         self.positions_right_target = self.arm_right.get_joint_positions()

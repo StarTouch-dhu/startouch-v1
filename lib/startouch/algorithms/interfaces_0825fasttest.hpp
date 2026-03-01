@@ -18,7 +18,7 @@ class ArmController {
             bool enable_fd = false
         );
         ~ArmController();
-        void set_joint(const std::vector<double>& q_end, double tf = 3.0 ,double ctrl_hz = 300.0);
+        void set_joint(const std::vector<double>& q_end, double tf = 3.0);
         void set_joint_raw(const std::vector<double>& q_end,const std::vector<double>& v_end);
         void identify_gravity_compensation();
         void set_end_effector_pose(const std::vector<double>& target_pos, const std::vector<double>& target_euler ,double tf);

@@ -16,6 +16,7 @@ class MainArmJointPublisher(Node):
 
         # 2. 初始化主臂控制器
         self.arm_controller_left = SingleArm(can_interface_="can1", enable_fd_=False)
+        time.sleep(2)
         
         self.vel_filtered = np.zeros(6)    # 关节速度
         self.alpha = 0.1                  # 滤波系数，可调整

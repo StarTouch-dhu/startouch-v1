@@ -24,7 +24,7 @@ PYBIND11_MODULE(startouch, m) {
             "Parameters:\n"
             "  q_end (list of float): The target joint angles.\n"
             "  tf (float): The time duration to reach the target positions.",
-            py::arg("q_end"), py::arg("tf") = 4.0 ,py::arg("ctrl_hz") = 300.0)
+            py::arg("q_end"), py::arg("tf") = 4.0)
 
         .def("set_joint_raw", &ArmController::set_joint_raw,py::arg("q_end"),py::arg("v_end"))
 
