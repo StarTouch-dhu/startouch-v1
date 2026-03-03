@@ -15,8 +15,8 @@ class MainArmJointPublisher(Node):
         self.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "gripper"]
 
         # 2. 初始化主臂控制器
-        self.arm_controller = SingleArm(can_interface_="can1", enable_fd_=False) # 主臂
-        self.arm_follower = SingleArm(can_interface_="can0", enable_fd_=False) # 从臂
+        self.arm_controller = SingleArm(can_interface_="can0", enable_fd_=False) # 主臂
+        self.arm_follower = SingleArm(can_interface_="can1", enable_fd_=False) # 从臂
         
         time.sleep(2)
         self.vel_filtered = np.zeros(6)    # 关节速度
@@ -34,8 +34,8 @@ class MainArmJointPublisher(Node):
         print("右臂初始状态获取完成")
 
         # 4. 创建关节状态发布者
-        self.joint_pub_controller = self.create_publisher(JointState, '/right_arm/joint_states_target', 10)
-        self.joint_pub_follower = self.create_publisher(JointState, '/right_arm/joint_states_now', 10)
+        self.joint_pub_controller = self.create_publisher(JointState, '/left_arm/joint_states_target', 10)
+        self.joint_pub_follower = self.create_publisher(JointState, '/left_arm/joint_states_now', 10)
         print("话题初始化完成")
 
         # 5. 初始化并启动线程
