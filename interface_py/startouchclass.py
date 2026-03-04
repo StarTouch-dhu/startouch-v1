@@ -287,12 +287,24 @@ class SingleArm:
         rpy_t = result[1]
         return pos_t,rpy_t
     
-    def solve_ik(self,pos,quat):
-        
-        euler = quaternion_to_euler_wxyz(quat)
-        q,res = self.arm.solve_ik(pos,euler)
+    # q_seed 数值解的初始猜疑值
+    def solve_ik(self, pos, quat, q_seed=None):
+        if len(pos) != 3:
+            raise ValueError(f"pos must be length 3, got {len(pos)}")
+        if len(quat) != 4:
+            raise ValueError(f"quat must be length 4 (wxyz), got {len(quat)}")
 
-        return q,res
+        euler = quaternion_to_euler_wxyz(quat)  # [roll, pitch, yaw]
+
+        if q_seed is None:
+            q, ok = self.arm.solve_ik(list(pos), list(euler))
+        else:
+            if len(q_seed) != 6:
+                raise ValueError(f"q_seed must be length 6, got {len(q_seed)}")
+            q, ok = self.arm.solve_ik(list(pos), list(euler), list(q_seed))
+
+        return q, ok
+
 
     def openGripper(self) -> bool:
         #把夹爪开到最大
