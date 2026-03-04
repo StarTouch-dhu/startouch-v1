@@ -140,6 +140,8 @@ while True:
         try:
             cur_pos, cur_euler = arm_controllers[0].get_ee_pose_euler()
             cur_gripper = arm_controllers[0].get_gripper_position()
+            q = arm_controllers[0].get_joint_positions()
+            print("Q:",q)
             print(
                 f"target pos = {pos}, target euler(rpy) = {euler}, target gripper = {gripper_pos:.3f}"
             )

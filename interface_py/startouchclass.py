@@ -287,6 +287,12 @@ class SingleArm:
         rpy_t = result[1]
         return pos_t,rpy_t
     
+    def solve_ik(self,pos,quat):
+        
+        euler = quaternion_to_euler_wxyz(quat)
+        q,res = self.arm.solve_ik(pos,euler)
+
+        return q,res
 
     def openGripper(self) -> bool:
         #把夹爪开到最大

@@ -23,6 +23,10 @@ class ArmController {
         void identify_gravity_compensation();
         void set_end_effector_pose(const std::vector<double>& target_pos, const std::vector<double>& target_euler ,double tf);
         void set_end_effector_pose_raw(const std::vector<double>& target_pos, const std::vector<double>& target_euler);
+        std::pair<std::vector<double>, bool> solve_ik(
+            const std::vector<double>& target_pos,
+            const std::vector<double>& target_euler,
+            const std::vector<double>& q_seed = {});
 
         std::pair<Eigen::Vector3d, Eigen::Vector3d> get_end_effector_pose();
         Eigen::VectorXd get_joint();

@@ -56,6 +56,21 @@ PYBIND11_MODULE(startouch, m) {
             "  target_pos (Eigen::Vector3d): Target position as a 3D vector (x, y, z).\n"
             "  target_euler (Eigen::Vector3d): Target orientation as Euler angles (roll, pitch, yaw).\n"
             , py::arg("target_pos"), py::arg("target_euler"))
+
+        .def("solve_ik", &ArmController::solve_ik,
+            "Solve IK for target end-effector pose.\n"
+            "\n"
+            "Parameters:\n"
+            "  target_pos (list[float]): Target position [x, y, z].\n"
+            "  target_euler (list[float]): Target euler [roll, pitch, yaw].\n"
+            "  q_seed (list[float], optional): IK initial seed, length=6. If empty, uses current joint.\n"
+            "\n"
+            "Returns:\n"
+            "  tuple[list[float], bool]: (q_sol, success)\n",
+            py::arg("target_pos"),
+            py::arg("target_euler"),
+            py::arg("q_seed") = std::vector<double>{})
+            
             
 
         .def("get_end_effector_pose", &ArmController::get_end_effector_pose)
